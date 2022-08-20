@@ -4,17 +4,17 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-#define N 100
+#define N 10
 #define d 2
 
 struct node {
-    double vantage_point[d];
+    double* vp;
     int id;
     double median_distance;
     double** data;
     struct node* inner;
     struct node* outer;
 };
-void create_node(double** data, int size);
+void create_node(double** data, int id_vp, double* vp, int size);
 
 #endif
