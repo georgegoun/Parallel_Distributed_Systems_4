@@ -57,5 +57,19 @@ int main(int argc, char* argv[])
         }
     }
 
-    create_node(data, id_vp, data[id_vp], N);
+    // creating nodes
+
+    // function
+
+    // int i=0;
+
+    // struct node* new_node = (struct node*)malloc(sizeof(struct node));
+    int node_count = 0;
+
+    struct node** nodes = (struct node**)malloc(N * sizeof(struct node*));
+
+    for (int node_count = 0; node_count < 3; node_count++) {
+        nodes[node_count] = create_node(data, id_vp, data[id_vp], N);
+    }
+    // create_node(data, id_vp, data[id_vp], N);
 }

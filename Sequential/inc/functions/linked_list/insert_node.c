@@ -13,7 +13,7 @@
 //     struct node* inner;
 //     struct node* outer;
 // };
-void create_node(double** data, int id_vp, double* vp, int size)
+struct node* create_node(double** data, int id_vp, double* vp, int size)
 {
     struct node* new_node = (struct node*)malloc(sizeof(struct node));
 
@@ -31,4 +31,6 @@ void create_node(double** data, int id_vp, double* vp, int size)
 
     new_node->inner = NULL;
     new_node->outer = NULL;
+    printf("node created\n");
+    return new_node;
 }
