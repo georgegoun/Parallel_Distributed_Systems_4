@@ -2,10 +2,10 @@
 #include <math.h>
 #include <stdio.h>
 
-int eucDist(int* center, int* point, int dimensions)
+double eucDist(double* center, double* point, int dimensions)
 {
 
-    int distance = 0;
+    double distance = 0;
     for (int i = 0; i < dimensions; i++) {
         distance += pow(point[i] - center[i], 2);
     }
