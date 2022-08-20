@@ -49,6 +49,7 @@ int main(int argc, char* argv[])
         }
     }
     printf("\n\n");
+    // double mu = median(distances, N, (N / 2) + 1);
     printf("median is: %lf\n", median(distances, N, (N / 2) + 1));
     for (int i = 0; i < N; i++) {
         printf("%.2f\t", distances[i]);
@@ -64,12 +65,13 @@ int main(int argc, char* argv[])
     // int i=0;
 
     // struct node* new_node = (struct node*)malloc(sizeof(struct node));
-    int node_count = 0;
+    int node_count = 1;
 
     struct node** nodes = (struct node**)malloc(N * sizeof(struct node*));
 
-    for (int node_count = 0; node_count < 3; node_count++) {
-        nodes[node_count] = create_node(data, id_vp, data[id_vp], N);
+    nodes[0] = create_node(data, id_vp, data[id_vp], N);
+
+    for (int node_count = 1; node_count < 3; node_count++) {
     }
     // create_node(data, id_vp, data[id_vp], N);
 }

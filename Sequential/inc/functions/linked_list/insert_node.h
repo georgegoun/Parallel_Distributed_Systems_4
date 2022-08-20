@@ -12,6 +12,7 @@ struct node {
     int id;
     double median_distance;
     double** data;
+    int data_size;
     struct node* inner;
     struct node* outer;
 };
