@@ -10,7 +10,7 @@
 #include <stdlib.h>
 #include <time.h>
 
-#define N 10
+#define N 20
 #define d 2
 #define high 100.0
 #define low 0.0
@@ -47,7 +47,13 @@ int main(int argc, char* argv[])
     for (int i = 0; i < 3; i++) {
         vp_tree(nodes[i], nodes, node_count_ptr);
         printf("node count is: %d\n", *node_count_ptr);
-        print_info(nodes[1]);
+    }
+    for (int i = 0; i < 7; i++) {
+        print_info(nodes[i]);
     }
     return 0;
 }
+
+// TODO: REMOVE DEFINE N AND d FROM THE INSERT_NODE.H FILE
+//       MAKE BRAKE CONDITION FOR THE VP_TREE FUNCTION
+//       CLEAR A BIT THE MAIN FUNCTION
