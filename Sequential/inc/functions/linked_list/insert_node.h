@@ -18,4 +18,8 @@ struct node {
 };
 struct node* create_node(double** data, int id_vp, double* vp, int size);
 
+void vp_tree(struct node* root, struct node** nodes, int* node_counter);
+
+void print_info(struct node* node);
+
 #endif

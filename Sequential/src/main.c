@@ -30,48 +30,24 @@ int main(int argc, char* argv[])
     for (int i = 0; i < N; i++) {
         for (int j = 0; j < d; j++) {
             data[i][j] = ((double)rand() * (high - low)) / (double)RAND_MAX + low;
-            printf("%.2f ", data[i][j]);
-        }
-        printf("\t");
-        if ((i + 1) % 2 == 0) {
-            printf("\n");
         }
     }
-    printf("\n\n");
-    double* distances = malloc(N * sizeof(double));
 
     int id_vp = rand() % N;
-    for (int i = 0; i < N; i++) {
-        distances[i] = eucDist(data[id_vp], data[i], d);
-        printf("%.2f\t", distances[i]);
-        if ((i + 1) % 2 == 0) {
-            printf("\n");
-        }
-    }
-    printf("\n\n");
-    // double mu = median(distances, N, (N / 2) + 1);
-    printf("median is: %lf\n", median(distances, N, (N / 2) + 1));
-    for (int i = 0; i < N; i++) {
-        printf("%.2f\t", distances[i]);
-        if ((i + 1) % 2 == 0) {
-            printf("\n");
-        }
-    }
 
     // creating nodes
 
-    // function
-
-    // int i=0;
-
-    // struct node* new_node = (struct node*)malloc(sizeof(struct node));
     int node_count = 1;
+    int* node_count_ptr = &node_count;
 
     struct node** nodes = (struct node**)malloc(N * sizeof(struct node*));
 
     nodes[0] = create_node(data, id_vp, data[id_vp], N);
-
-    for (int node_count = 1; node_count < 3; node_count++) {
+    print_info(nodes[0]);
+    for (int i = 0; i < 3; i++) {
+        vp_tree(nodes[i], nodes, node_count_ptr);
+        printf("node count is: %d\n", *node_count_ptr);
+        print_info(nodes[1]);
     }
-    // create_node(data, id_vp, data[id_vp], N);
+    return 0;
 }

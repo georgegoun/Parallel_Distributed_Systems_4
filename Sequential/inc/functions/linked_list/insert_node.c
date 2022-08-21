@@ -26,8 +26,12 @@ struct node* create_node(double** data, int id_vp, double* vp, int size)
     for (int i = 0; i < size; i++) {
         new_node->data[i] = (double*)malloc(d * sizeof(double));
     }
-
-    new_node->data = data;
+    for (int i = 0; i < size; i++) {
+        for (int j = 0; j < d; j++) {
+            new_node->data[i][j] = data[i][j];
+        }
+    }
+    // new_node->data = data;
 
     new_node->id = id_vp;
 
@@ -37,11 +41,11 @@ struct node* create_node(double** data, int id_vp, double* vp, int size)
 
     new_node->inner = NULL;
     new_node->outer = NULL;
-    printf("node created\n");
+    printf("node created...\n");
     return new_node;
 }
 
-void vp_tree(struct node* root)
+void vp_tree(struct node* root, struct node** nodes, int* node_counter)
 {
     double* distances = malloc(root->data_size * sizeof(double));
     for (int i = 0; i < root->data_size; i++) {
@@ -75,26 +79,62 @@ void vp_tree(struct node* root)
     for (int i = 0; i < data_parts_size_outer; i++) {
         data_outer[i] = (double*)malloc(d * sizeof(double));
     }
+    int inner = 0, outer = 0;
 
     for (int i = 0; i < root->data_size; i++) {
-        int inner = 0, outer = 0;
         if (distances[i] <= median_node) {
             for (int j = 0; j < d; j++) {
+
                 data_inner[inner][j] = root->data[i][j];
-                inner++;
             }
+            inner++;
+
         } else {
             for (int j = 0; j < d; j++) {
                 data_outer[outer][j] = root->data[i][j];
-                outer++;
             }
+            outer++;
         }
     }
 
     // create inner and outer nodes
-    struct node* inner_node = create_node(data_inner, 0, data_inner[0], data_parts_size_inner);
-    struct node* outer_node = create_node(data_outer, 0, data_outer[0], data_parts_size_outer);
-    root->inner = inner_node;
-    root->outer = outer_node;
+    nodes[*node_counter] = create_node(data_inner, 0, data_inner[0], data_parts_size_inner);
+    root->inner = nodes[*node_counter];
+    (*node_counter)++;
+    nodes[*node_counter] = create_node(data_outer, 0, data_outer[0], data_parts_size_outer);
+    root->outer = nodes[*node_counter];
+    (*node_counter)++;
+
     printf("vp tree created\n");
+}
+
+void print_info(struct node* node)
+{
+    printf("\n\n--------------------\n\n");
+    printf("node id: %d\n", node->id);
+    printf("node vp: ");
+    for (int i = 0; i < d; i++) {
+        printf("%f\t", node->vp[i]);
+    }
+    printf("\n");
+    printf("node data size: %d\nmedian distance: %f\n\n-- -- -\tdata\t-- -- -\n",
+        node->data_size,
+        node->median_distance);
+    for (int i = 0; i < node->data_size; i++) {
+        for (int j = 0; j < d; j++) {
+            printf("%f ", node->data[i][j]);
+        }
+        printf("\n");
+    }
+    if (node->inner != NULL) {
+        printf("we got an inner child!\n");
+        // printf("inner node:\n");
+        // print_info(node->inner);
+    }
+    if (node->outer != NULL) {
+        printf("we got an outer child!\n");
+        // printf("outer node:\n");
+        // print_info(node->outer);
+    }
+    printf("\n\n--------------------\n\n");
 }

@@ -49,7 +49,7 @@ double median(double* A, int n, int k)
     int right = n - 1;
     quickselect(A, left, right, k);
 
-    printf("k= %d\n", k - 1);
+    // printf("k= %d\n", k - 1);
     if ((n % 2) == 0) {
         return (((double)A[k - 2] + (double)A[k - 1]) / 2);
     }
