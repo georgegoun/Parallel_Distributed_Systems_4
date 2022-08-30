@@ -4,8 +4,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-#define N 20
-#define d 2
+//#define N 20
 
 // struct node {
 //     double* vp;
@@ -17,7 +16,7 @@
 //     struct node* outer;
 // };
 
-struct node* create_node(double** data, int id_vp, double* vp, int size)
+struct node* create_node(double** data, int id_vp, double* vp, int size, int d)
 {
     struct node* new_node = (struct node*)malloc(sizeof(struct node));
 
@@ -45,9 +44,16 @@ struct node* create_node(double** data, int id_vp, double* vp, int size)
     return new_node;
 }
 
-void vp_tree(struct node* root, struct node** nodes, int* node_counter)
+void vp_tree(struct node* root, struct node** nodes, int* node_counter, int d)
 {
+    if (root->data_size <= 1) {
+        return;
+    }
+
+    // finding the median distance
+
     double* distances = malloc(root->data_size * sizeof(double));
+
     for (int i = 0; i < root->data_size; i++) {
         distances[i] = eucDist(root->vp, root->data[i], d);
     }
@@ -79,6 +85,7 @@ void vp_tree(struct node* root, struct node** nodes, int* node_counter)
     for (int i = 0; i < data_parts_size_outer; i++) {
         data_outer[i] = (double*)malloc(d * sizeof(double));
     }
+
     int inner = 0, outer = 0;
 
     for (int i = 0; i < root->data_size; i++) {
@@ -98,17 +105,17 @@ void vp_tree(struct node* root, struct node** nodes, int* node_counter)
     }
 
     // create inner and outer nodes
-    nodes[*node_counter] = create_node(data_inner, 0, data_inner[0], data_parts_size_inner);
+    nodes[*node_counter] = create_node(data_inner, 0, data_inner[0], data_parts_size_inner, d);
     root->inner = nodes[*node_counter];
     (*node_counter)++;
-    nodes[*node_counter] = create_node(data_outer, 0, data_outer[0], data_parts_size_outer);
+    nodes[*node_counter] = create_node(data_outer, 0, data_outer[0], data_parts_size_outer, d);
     root->outer = nodes[*node_counter];
     (*node_counter)++;
 
     printf("vp tree created\n");
 }
 
-void print_info(struct node* node)
+void print_info(struct node* node, int d)
 {
     printf("\n\n--------------------\n\n");
     printf("node id: %d\n", node->id);

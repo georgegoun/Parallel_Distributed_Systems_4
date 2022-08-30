@@ -4,8 +4,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-#define N 20
-#define d 2
+//#define N 20
 
 struct node {
     double* vp;
@@ -16,10 +15,10 @@ struct node {
     struct node* inner;
     struct node* outer;
 };
-struct node* create_node(double** data, int id_vp, double* vp, int size);
+struct node* create_node(double** data, int id_vp, double* vp, int size, int d);
 
-void vp_tree(struct node* root, struct node** nodes, int* node_counter);
+void vp_tree(struct node* root, struct node** nodes, int* node_counter, int d);
 
-void print_info(struct node* node);
+void print_info(struct node* node, int d);
 
 #endif

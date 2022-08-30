@@ -5,12 +5,13 @@
 #include "../inc/functions/linked_list/insert_node.h"
 #include "../inc/functions/median.h"
 #include "../inc/helpers/eucDist.h"
+#include "../inc/helpers/tree_info_calc.h"
 
 #include <stdio.h>
 #include <stdlib.h>
 #include <time.h>
 
-#define N 20
+#define N 10000
 #define d 2
 #define high 100.0
 #define low 0.0
@@ -40,20 +41,23 @@ int main(int argc, char* argv[])
     int node_count = 1;
     int* node_count_ptr = &node_count;
 
-    struct node** nodes = (struct node**)malloc(N * sizeof(struct node*));
+    struct node** nodes = (struct node**)malloc(tree_info_calc(N) * sizeof(struct node*));
 
-    nodes[0] = create_node(data, id_vp, data[id_vp], N);
-    print_info(nodes[0]);
-    for (int i = 0; i < 3; i++) {
-        vp_tree(nodes[i], nodes, node_count_ptr);
+    nodes[0] = create_node(data, id_vp, data[id_vp], N, d);
+
+    // print_info(nodes[0], d);
+    for (int i = 0; i < *(node_count_ptr); i++) {
+        vp_tree(nodes[i], nodes, node_count_ptr, d);
         printf("node count is: %d\n", *node_count_ptr);
+        // print_info(nodes[0], d);
     }
-    for (int i = 0; i < 7; i++) {
-        print_info(nodes[i]);
+
+    for (int i = 0; i < *node_count_ptr; i++) {
+        print_info(nodes[i], d);
     }
     return 0;
 }
 
-// TODO: REMOVE DEFINE N AND d FROM THE INSERT_NODE.H FILE
-//       MAKE BRAKE CONDITION FOR THE VP_TREE FUNCTION
-//       CLEAR A BIT THE MAIN FUNCTION
+// TODO: REMOVE DEFINE N AND d FROM THE INSERT_NODE.H FILE  \//
+//       MAKE BRAKE CONDITION FOR THE VP_TREE FUNCTION      \//
+//       CLEAR A BIT THE MAIN FUNCTION                      \//
