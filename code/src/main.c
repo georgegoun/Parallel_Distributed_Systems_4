@@ -1,20 +1,24 @@
 // The algorithm is based on a very simple idea: select a point as the vantage point,
 // compute the distance of every point to the vantage
 // point and split the points according to the median distance.
-
-#include "../inc/functions/linked_list/insert_node.h"
-#include "../inc/functions/median.h"
 #include "../inc/helpers/eucDist.h"
 #include "../inc/helpers/tree_info_calc.h"
+#include "../inc/seq_functions/linked_list/insert_node.h"
+#include "../inc/seq_functions/median.h"
+
+// threads
+#include "../inc/threads_functions/linked_list/insert_node_threads.h"
+#include <pthread.h>
 
 #include <stdio.h>
 #include <stdlib.h>
 #include <time.h>
 
-#define N 10000
+#define N 10
 #define d 2
 #define high 100.0
 #define low 0.0
+#define NUMOFTHREADS 3
 
 int main(int argc, char* argv[])
 {
@@ -45,11 +49,23 @@ int main(int argc, char* argv[])
 
     nodes[0] = create_node(data, id_vp, data[id_vp], N, d);
 
-    // print_info(nodes[0], d);
-    for (int i = 0; i < *(node_count_ptr); i++) {
-        vp_tree(nodes[i], nodes, node_count_ptr, d);
-        printf("node count is: %d\n", *node_count_ptr);
+    /*
         // print_info(nodes[0], d);
+        for (int i = 0; i < *(node_count_ptr); i++) {
+            vp_tree(nodes[i], nodes, node_count_ptr, d);
+            printf("node count is: %d\n", *node_count_ptr);
+            // print_info(nodes[0], d);
+        }
+
+        for (int i = 0; i < *node_count_ptr; i++) {
+            print_info(nodes[i], d);
+        }
+    */
+
+    // threads
+    for (int i = 0; i < *(node_count_ptr); i++) {
+        vp_tree_threads(nodes[i], nodes, node_count_ptr, d, NUMOFTHREADS);
+        printf("node count is: %d\n", *node_count_ptr);
     }
 
     for (int i = 0; i < *node_count_ptr; i++) {
