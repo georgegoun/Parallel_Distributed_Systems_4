@@ -14,7 +14,7 @@
 #include <stdlib.h>
 #include <time.h>
 
-#define N 10
+#define N 10000
 #define d 2
 #define high 100.0
 #define low 0.0
