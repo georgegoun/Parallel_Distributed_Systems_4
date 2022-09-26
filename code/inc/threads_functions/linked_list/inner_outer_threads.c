@@ -67,7 +67,7 @@ void* inner_outer_threads(void* args)
     pthread_mutex_lock(arg->lock);
     if ((*arg->lock_counter) == arg->num_threads) {
         // printf("FREE: id: %d____lock counter is: %d\n", arg->id, *arg->lock_counter);
-        *arg->lock_counter += *arg->lock_counter + 1;
+        *arg->lock_counter = *arg->lock_counter + 1;
         pthread_cond_broadcast(arg->cond1);
     }
     pthread_mutex_unlock(arg->lock);
@@ -96,37 +96,47 @@ void* inner_outer_threads(void* args)
 
     pthread_mutex_lock(arg->lock2);
     while (*arg->lock_counter2 < arg->num_threads) {
-        printf("WAIT: id: %d____lock counter is: %d\n", arg->id, *arg->lock_counter2);
+        // printf("WAIT: id: %d____lock counter is: %d\n", arg->id, *arg->lock_counter2);
         pthread_cond_wait(arg->cond2, arg->lock2);
     }
     pthread_mutex_unlock(arg->lock2);
 
     pthread_mutex_lock(arg->lock2);
     if ((*arg->lock_counter2) == arg->num_threads) {
-        printf("FREE: id: %d____lock counter is: %d\n", arg->id, *arg->lock_counter2);
-        *arg->lock_counter2 += *arg->lock_counter2 + 1;
+        // printf("FREE: id: %d____lock counter is: %d\n", arg->id, *arg->lock_counter2);
+        *arg->lock_counter2 = *arg->lock_counter2 + 1;
         pthread_cond_broadcast(arg->cond2);
     }
     pthread_mutex_unlock(arg->lock2);
+
+    printf("id: %d____ sizes: in_%d out_%d arg_in %d arg_out %d arg_dim %d i_start %d i_end %d\n", arg->id, *arg->data_parts_size_inner, *arg->data_parts_size_outer, *arg->inner, *arg->outer, arg->dim, start, end);
 
     // assign each data point to inner or outer node
     for (int i = start; i < end; i++) {
         if (arg->distances[i] <= arg->root->median_distance) {
             pthread_mutex_lock(arg->mutex);
+            // printf("OK: id: %d____\n", arg->id);
             for (int j = 0; j < arg->dim; j++) {
-                arg->data_inner[*(arg->inner) - 1][j] = arg->root->data[i][j];
+                arg->data_inner[*(arg->inner)][j] = arg->root->data[i][j];
             }
-            (*arg->inner)++;
+            printf("!!OK: id: %d____\n", arg->id);
+            (*arg->inner) = (*arg->inner) + 1;
             pthread_mutex_unlock(arg->mutex);
         } else {
-            pthread_mutex_lock(arg->mutex);
-            for (int j = 0; j < arg->dim; j++) {
-                arg->data_outer[*(arg->outer) - 1][j] = arg->root->data[i][j];
-            }
-            (*arg->outer)--;
-            pthread_mutex_unlock(arg->mutex);
+            // pthread_mutex_lock(arg->lock);
+            // // printf("ELSE!: OK: id: %d____, out %d arg_out %d\n", arg->id, *arg->data_parts_size_outer, *arg->outer);
+            // for (int j = 0; j < arg->dim; j++) {
+            //     printf("arg_outer: %d i: %d data:%f \n", *(arg->outer), i, arg->root->data[i][j]);
+            //     arg->data_outer[*(arg->outer)][j] = arg->root->data[i][j];
+            //     // printf("ELSE!!: OK: id: %d____\n", arg->id);
+            // }
+            // printf("ELSE: OK: id: %d____\n", arg->id);
+
+            // (*arg->outer) = (*arg->outer) + 1;
+            // pthread_mutex_unlock(arg->lock);
         }
     }
+
     printf("OK: id: %d____\n", arg->id);
 
     return NULL;
