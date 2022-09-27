@@ -16,11 +16,12 @@
 #include <stdlib.h>
 #include <time.h>
 
-#define N 10000000
+#define N 1000000
 #define d 2
 #define high 100.0
 #define low 0.0
-#define NUMOFTHREADS 1000
+#define NUMOFTHREADS 30
+#define THRESHOLD 10000
 
 int main(int argc, char* argv[])
 {
@@ -76,6 +77,19 @@ int main(int argc, char* argv[])
         }
         stop_pthreads = timerStop(stop_pthreads);
         printf("\nPthreads %d elements in %d dimensions and %d nodes_created in %lf seconds\n", N, d, *node_count_ptr, timeDif(start_pthreads, stop_pthreads));
+        break;
+    case 3:
+        start_threshold = timerStart(start_threshold);
+        for (int i = 0; i < *(node_count_ptr); i++) {
+            if (nodes[i]->data_size < THRESHOLD) {
+                vp_tree(nodes[i], nodes, node_count_ptr, d);
+            } else {
+                vp_tree_threads(nodes[i], nodes, node_count_ptr, d, NUMOFTHREADS);
+            }
+        }
+        stop_threshold = timerStop(stop_threshold);
+        printf("\nThreshold %d elements in %d dimensions and %d nodes_created in %lf seconds\n", N, d, *node_count_ptr, timeDif(start_threshold, stop_threshold));
+
         break;
     }
 

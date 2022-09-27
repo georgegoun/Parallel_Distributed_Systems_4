@@ -94,34 +94,42 @@ void vp_tree_threads(struct node* root, struct node** nodes, int* node_counter, 
     int* data_parts_size_outer = malloc(sizeof(int));
 
     *data_parts_size_inner = 0;
-    *data_parts_size_outer = root->data_size;
+    *data_parts_size_outer = 0;
 
-    makeStruct2* arguments2;
-    pthread_t* threads2;
+    // makeStruct2* arguments2;
+    // pthread_t* threads2;
 
-    arguments2 = (makeStruct2*)malloc(sizeof(makeStruct2) * num_threads);
-    threads2 = (pthread_t*)malloc(sizeof(pthread_t) * num_threads);
+    // arguments2 = (makeStruct2*)malloc(sizeof(makeStruct2) * num_threads);
+    // threads2 = (pthread_t*)malloc(sizeof(pthread_t) * num_threads);
 
-    pthread_mutex_t* mtx;
-    mtx = malloc(sizeof(pthread_mutex_t));
-    pthread_mutex_init(mtx, NULL);
+    // pthread_mutex_t* mtx;
+    // mtx = malloc(sizeof(pthread_mutex_t));
+    // pthread_mutex_init(mtx, NULL);
 
-    for (int i = 0; i < num_threads; i++) {
-        arguments2[i].id = i;
-        arguments2[i].num_threads = num_threads;
-        arguments2[i].root = root;
-        arguments2[i].dim = d;
-        arguments2[i].distances = distances;
-        arguments2[i].data_parts_size_inner = data_parts_size_inner;
-        arguments2[i].data_parts_size_outer = data_parts_size_outer;
-        arguments2[i].mutex = mtx;
-        pthread_create(&threads2[i], NULL, inner_outer_threads, (void*)&arguments2[i]);
+    // for (int i = 0; i < num_threads; i++) {
+    //     arguments2[i].id = i;
+    //     arguments2[i].num_threads = num_threads;
+    //     arguments2[i].root = root;
+    //     arguments2[i].dim = d;
+    //     arguments2[i].distances = distances;
+    //     arguments2[i].data_parts_size_inner = data_parts_size_inner;
+    //     arguments2[i].data_parts_size_outer = data_parts_size_outer;
+    //     arguments2[i].mutex = mtx;
+    //     pthread_create(&threads2[i], NULL, inner_outer_threads, (void*)&arguments2[i]);
+    // }
+
+    // for (int i = 0; i < num_threads; i++) {
+    //     pthread_join(threads2[i], NULL);
+    // }
+    // pthread_mutex_destroy(mtx);
+
+    for (int i = 0; i < root->data_size; i++) {
+        if (distances[i] <= root->median_distance) {
+            *data_parts_size_inner = *data_parts_size_inner + 1;
+        }
     }
 
-    for (int i = 0; i < num_threads; i++) {
-        pthread_join(threads2[i], NULL);
-    }
-    pthread_mutex_destroy(mtx);
+    *data_parts_size_outer = root->data_size - *data_parts_size_inner;
 
     double** data_inner = (double**)malloc(sizeof(double*) * (*data_parts_size_inner));
     for (int i = 0; i < (*data_parts_size_inner); i++) {
