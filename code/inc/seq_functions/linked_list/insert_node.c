@@ -40,6 +40,8 @@ struct node* create_node(double** data, int id_vp, double* vp, int size, int d)
 
     new_node->inner = NULL;
     new_node->outer = NULL;
+
+    new_node->prev = NULL;
     return new_node;
 }
 
@@ -106,9 +108,11 @@ void vp_tree(struct node* root, struct node** nodes, int* node_counter, int d)
     // create inner and outer nodes
     nodes[*node_counter] = create_node(data_inner, 0, data_inner[0], data_parts_size_inner, d);
     root->inner = nodes[*node_counter];
+    nodes[*node_counter]->prev = root;
     (*node_counter)++;
     nodes[*node_counter] = create_node(data_outer, 0, data_outer[0], data_parts_size_outer, d);
     root->outer = nodes[*node_counter];
+    nodes[*node_counter]->prev = root;
     (*node_counter)++;
 }
 

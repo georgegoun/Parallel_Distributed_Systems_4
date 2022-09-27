@@ -78,6 +78,7 @@ int main(int argc, char* argv[])
         stop_pthreads = timerStop(stop_pthreads);
         printf("\nPthreads %d elements in %d dimensions and %d nodes_created in %lf seconds\n", N, d, *node_count_ptr, timeDif(start_pthreads, stop_pthreads));
         break;
+        /*              Threshold              */
     case 3:
         start_threshold = timerStart(start_threshold);
         for (int i = 0; i < *(node_count_ptr); i++) {
@@ -98,7 +99,3 @@ int main(int argc, char* argv[])
     // }
     return 0;
 }
-
-// TODO: REMOVE DEFINE N AND d FROM THE INSERT_NODE.H FILE  \//
-//       MAKE BRAKE CONDITION FOR THE VP_TREE FUNCTION      \//
-//       CLEAR A BIT THE MAIN FUNCTION                      \//

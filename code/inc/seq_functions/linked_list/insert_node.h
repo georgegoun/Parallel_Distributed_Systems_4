@@ -14,6 +14,7 @@ struct node {
     int data_size;
     struct node* inner;
     struct node* outer;
+    struct node* prev;
 };
 struct node* create_node(double** data, int id_vp, double* vp, int size, int d);
 
