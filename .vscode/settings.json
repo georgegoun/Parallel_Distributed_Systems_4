@@ -2,6 +2,7 @@
     "files.associations": {
         "algorithm": "c",
         "stdlib.h": "c",
-        "pthread.h": "c"
+        "pthread.h": "c",
+        "insert_node_threads.h": "c"
     }
 }

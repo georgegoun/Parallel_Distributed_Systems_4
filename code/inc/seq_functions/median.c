@@ -11,7 +11,7 @@ void swap(double* a, double* b)
 
 int partition(double* A, int left, int right)
 {
-    int pivot = A[right];
+    double pivot = A[right];
     int i = left, x;
     for (x = left; x < right; x++) {
         if (A[x] < pivot) {

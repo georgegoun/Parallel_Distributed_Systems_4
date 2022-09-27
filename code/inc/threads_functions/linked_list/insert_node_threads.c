@@ -181,6 +181,4 @@ void vp_tree_threads(struct node* root, struct node** nodes, int* node_counter, 
     nodes[*node_counter] = create_node(data_outer, 0, data_outer[0], *data_parts_size_outer, d);
     root->outer = nodes[*node_counter];
     (*node_counter)++;
-
-    printf("vp tree created\n");
 }

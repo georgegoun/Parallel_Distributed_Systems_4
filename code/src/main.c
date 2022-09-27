@@ -2,11 +2,13 @@
 // compute the distance of every point to the vantage
 // point and split the points according to the median distance.
 #include "../inc/helpers/eucDist.h"
+#include "../inc/helpers/timer.h"
 #include "../inc/helpers/tree_info_calc.h"
 #include "../inc/seq_functions/linked_list/insert_node.h"
 #include "../inc/seq_functions/median.h"
 
 // threads
+
 #include "../inc/threads_functions/linked_list/insert_node_threads.h"
 #include <pthread.h>
 
@@ -14,15 +16,22 @@
 #include <stdlib.h>
 #include <time.h>
 
-#define N 100
+#define N 10000000
 #define d 2
 #define high 100.0
 #define low 0.0
-#define NUMOFTHREADS 3
+#define NUMOFTHREADS 1000
 
 int main(int argc, char* argv[])
 {
     time_t t;
+
+    // timers
+    struct timespec start_seq = { 0 }, stop_seq = { 0 };
+    struct timespec start_pthreads = { 0 }, stop_pthreads = { 0 };
+    struct timespec start_threshold = { 0 }, stop_threshold = { 0 };
+
+    int method_code = atoi(argv[1]);
 
     double** data = (double**)malloc(N * sizeof(double*));
 
@@ -46,31 +55,33 @@ int main(int argc, char* argv[])
     int* node_count_ptr = &node_count;
 
     struct node** nodes = (struct node**)malloc(tree_info_calc(N) * sizeof(struct node*));
-
     nodes[0] = create_node(data, id_vp, data[id_vp], N, d);
-
-    /*
+    switch (method_code) {
+        /*              Sequential              */
+    case 1:
         // print_info(nodes[0], d);
+        start_seq = timerStart(start_seq);
         for (int i = 0; i < *(node_count_ptr); i++) {
             vp_tree(nodes[i], nodes, node_count_ptr, d);
-            printf("node count is: %d\n", *node_count_ptr);
-            // print_info(nodes[0], d);
         }
+        stop_seq = timerStop(stop_seq);
+        printf("\nSequential %d elements in %d dimensions and %d nodes_created in %lf seconds\n", N, d, *node_count_ptr, timeDif(start_seq, stop_seq));
+        break;
 
-        for (int i = 0; i < *node_count_ptr; i++) {
-            print_info(nodes[i], d);
+        /*              Pthreads               */
+    case 2:
+        start_pthreads = timerStart(start_pthreads);
+        for (int i = 0; i < *(node_count_ptr); i++) {
+            vp_tree_threads(nodes[i], nodes, node_count_ptr, d, NUMOFTHREADS);
         }
-    */
-
-    // threads
-    for (int i = 0; i < *(node_count_ptr); i++) {
-        vp_tree_threads(nodes[i], nodes, node_count_ptr, d, NUMOFTHREADS);
-        printf("node count is: %d\n", *node_count_ptr);
+        stop_pthreads = timerStop(stop_pthreads);
+        printf("\nPthreads %d elements in %d dimensions and %d nodes_created in %lf seconds\n", N, d, *node_count_ptr, timeDif(start_pthreads, stop_pthreads));
+        break;
     }
 
-    for (int i = 0; i < *node_count_ptr; i++) {
-        print_info(nodes[i], d);
-    }
+    // for (int i = 0; i < *node_count_ptr; i++) {
+    //     print_info(nodes[i], d);
+    // }
     return 0;
 }
 
