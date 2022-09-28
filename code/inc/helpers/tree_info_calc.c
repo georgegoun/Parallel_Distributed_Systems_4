@@ -8,7 +8,7 @@ int tree_info_calc(int N)
 
     // height is upper log2(N) with math.h log2(N)
     height = (int)ceil(log2(N));
-    // height = 25;
+
     //  node is sum of 2^height
     for (int i = 0; i <= height; i++) {
         nodes += pow(2, i);

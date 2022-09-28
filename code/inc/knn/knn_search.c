@@ -40,15 +40,20 @@ void knn_search(struct node** nodes, int dim, double** knn, int k, int knn_pos)
             for (int j = 0; j < dim; j++) {
                 knn[i][j] = current_node->data[i][j];
             }
-            temp_distances_arr[i] = eucDist(current_node->data[i], nodes[0]->data[knn_pos], dim);
+            if (eucDist(current_node->data[i], nodes[0]->data[knn_pos], dim) == 0) {
+                temp_distances_arr[i] = INFINITY;
+            } else {
+                temp_distances_arr[i] = eucDist(current_node->data[i], nodes[0]->data[knn_pos], dim);
+            }
 
         } else {
             temp_distance = eucDist(current_node->data[i], nodes[0]->data[knn_pos], dim);
             for (int j = 0; j < k; j++) {
-                if (temp_distance < temp_distances_arr[j]) {
+
+                if ((temp_distance < temp_distances_arr[j]) && (temp_distance != 0.0)) {
                     temp_distances_arr[j] = temp_distance;
                     for (int k = 0; k < dim; k++) {
-                        knn[j][k] = current_node->data[j][k];
+                        knn[j][k] = current_node->data[i][k];
                     }
                     break;
                 }
@@ -83,10 +88,10 @@ void knn_search(struct node** nodes, int dim, double** knn, int k, int knn_pos)
 
                 temp_distance = eucDist(current_node->data[i], nodes[0]->data[knn_pos], dim);
                 for (int j = 0; j < k; j++) {
-                    if (temp_distance < temp_distances_arr[j]) {
+                    if (temp_distance < temp_distances_arr[j] && temp_distance != 0.0) {
                         temp_distances_arr[j] = temp_distance;
-                        for (int k = 0; k < dim; k++) {
-                            knn[j][k] = current_node->data[j][k];
+                        for (int p = 0; p < dim; p++) {
+                            knn[j][p] = current_node->data[i][p];
                         }
                         break;
                     }
@@ -100,5 +105,14 @@ void knn_search(struct node** nodes, int dim, double** knn, int k, int knn_pos)
             break;
         }
     }
+    if (knn_pos == 7) {
+        for (int i = 0; i < k; i++) {
+            /* code */
+            if (temp_distances_arr[i] == 0) {
+            }
+            printf("%f\t", temp_distances_arr[i]);
+        }
+    }
+
     return;
 }

@@ -54,12 +54,14 @@ void vp_tree(struct node* root, struct node** nodes, int* node_counter, int d)
     // finding the median distance
 
     double* distances = malloc(root->data_size * sizeof(double));
+    double* distances2 = malloc(root->data_size * sizeof(double));
 
     for (int i = 0; i < root->data_size; i++) {
         distances[i] = eucDist(root->vp, root->data[i], d);
+        distances2[i] = eucDist(root->vp, root->data[i], d);
     }
 
-    root->median_distance = median(distances, root->data_size, (root->data_size / 2) + 1);
+    root->median_distance = median(distances2, root->data_size, (root->data_size / 2) + 1);
 
     // calculate inner and outer sizes
 
