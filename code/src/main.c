@@ -19,13 +19,13 @@
 #include <stdlib.h>
 #include <time.h>
 
-#define N 1000000
+#define N 10
 #define d 2
 #define high 100.0
 #define low 0.0
 #define NUMOFTHREADS 30
 #define THRESHOLD 10000
-#define k 4
+#define k 2
 
 int main(int argc, char* argv[])
 {
@@ -108,6 +108,26 @@ int main(int argc, char* argv[])
         for (int i = 0; i < N; i++) {
             knn_search(nodes, d, knn[i], k, i);
         }
+        printf("data:\n");
+
+        for (int j = 0; j < N; j++) {
+            for (int l = 0; l < d; l++) {
+                printf("%lf ", data[j][l]);
+            }
+            printf("\n");
+        }
+        printf("\nknn data search for: ");
+        for (int i = 0; i < d; i++) {
+            printf("%lf ", data[7][i]);
+        }
+        printf("\n");
+        for (int i = 0; i < k; i++) {
+            for (int j = 0; j < d; j++) {
+                printf("%lf ", knn[7][i][j]);
+            }
+            printf("\n");
+        }
     }
+
     return 0;
 }
