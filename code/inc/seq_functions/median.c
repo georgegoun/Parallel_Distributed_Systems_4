@@ -55,3 +55,17 @@ double median(double* A, int n, int k)
     }
     return A[k - 1];
 }
+
+// knn
+
+// function tha finds max element in an array and returns its index
+int find_max(double* array, int n)
+{
+    int max = 0;
+    for (int i = 1; i < n; i++) {
+        if (array[i] > array[max]) {
+            max = i;
+        }
+    }
+    return max;
+}

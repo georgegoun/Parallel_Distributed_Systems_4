@@ -1,6 +1,8 @@
 #ifndef KNN_SEARCH
 #define KNN_SEARCH
 
+#include "../seq_functions/linked_list/insert_node.h"
+
 #include <stdio.h>
 #include <stdlib.h>
 

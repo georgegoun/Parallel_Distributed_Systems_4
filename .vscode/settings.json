@@ -5,6 +5,9 @@
         "pthread.h": "c",
         "insert_node_threads.h": "c",
         "tree_info_calc.h": "c",
-        "eucdist.h": "c"
+        "eucdist.h": "c",
+        "median.h": "c",
+        "knn_search.h": "c",
+        "insert_node.h": "c"
     }
 }

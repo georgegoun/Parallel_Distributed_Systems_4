@@ -12,6 +12,9 @@
 #include "../inc/threads_functions/linked_list/insert_node_threads.h"
 #include <pthread.h>
 
+// knn search
+#include "../inc/knn/knn_search.h"
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <time.h>
@@ -22,6 +25,7 @@
 #define low 0.0
 #define NUMOFTHREADS 30
 #define THRESHOLD 10000
+#define k 4
 
 int main(int argc, char* argv[])
 {
@@ -93,9 +97,17 @@ int main(int argc, char* argv[])
 
         break;
     }
-
-    // for (int i = 0; i < *node_count_ptr; i++) {
-    //     print_info(nodes[i], d);
-    // }
+    if (atoi(argv[2]) == 1) {
+        double*** knn = (double***)malloc(N * sizeof(double**));
+        for (int i = 0; i < N; i++) {
+            knn[i] = (double**)malloc(k * sizeof(double*));
+            for (int j = 0; j < k; j++) {
+                knn[i][j] = (double*)malloc(d * sizeof(double));
+            }
+        }
+        for (int i = 0; i < N; i++) {
+            knn_search(nodes, d, knn[i], k, i);
+        }
+    }
     return 0;
 }
