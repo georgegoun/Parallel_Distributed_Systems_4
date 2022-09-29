@@ -19,12 +19,12 @@
 #include <stdlib.h>
 #include <time.h>
 
-#define N 800000
-#define d 2
+#define N 4000000
+#define d 4
 #define high 100.0
 #define low 0.0
-#define NUMOFTHREADS 30
-#define THRESHOLD 10000
+#define NUMOFTHREADS 100
+#define THRESHOLD 150000
 #define k 8
 
 int main(int argc, char* argv[])

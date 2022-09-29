@@ -9,6 +9,7 @@
 #include "inner_outer_threads.h"
 
 #include <pthread.h>
+#include <stdbool.h>
 #include <stdio.h>
 #include <stdlib.h>
 
@@ -28,6 +29,7 @@ typedef struct Struct {
     struct node* root;
     int dim;
     double* distances;
+    double* distances_copy;
 } makeStruct;
 
 typedef struct Struct2 {
@@ -53,6 +55,7 @@ typedef struct Struct3 {
     double** data_outer;
     int* inner;
     int* outer;
+    bool* flag;
     pthread_mutex_t* mtxin;
     pthread_mutex_t* mtxout;
 } makeStruct3;
@@ -74,6 +77,7 @@ void vp_tree_threads(struct node* root, struct node** nodes, int* node_counter, 
     // finding the median distance
 
     double* distances = malloc(root->data_size * sizeof(double));
+    double* distances_copy = malloc(root->data_size * sizeof(double));
 
     for (int i = 0; i < num_threads; i++) {
         arguments[i].id = i;
@@ -81,6 +85,7 @@ void vp_tree_threads(struct node* root, struct node** nodes, int* node_counter, 
         arguments[i].root = root;
         arguments[i].dim = d;
         arguments[i].distances = distances;
+        arguments[i].distances_copy = distances_copy;
         pthread_create(&threads[i], NULL, distances_threads, (void*)&arguments[i]);
     }
 
@@ -88,44 +93,25 @@ void vp_tree_threads(struct node* root, struct node** nodes, int* node_counter, 
         pthread_join(threads[i], NULL);
     }
 
-    root->median_distance = median(distances, root->data_size, (root->data_size / 2) + 1);
-
+    root->median_distance = median(distances_copy, root->data_size, (root->data_size / 2) + 1);
+    free(distances_copy);
     int* data_parts_size_inner = malloc(sizeof(int));
     int* data_parts_size_outer = malloc(sizeof(int));
 
     *data_parts_size_inner = 0;
     *data_parts_size_outer = 0;
 
-    // makeStruct2* arguments2;
-    // pthread_t* threads2;
-
-    // arguments2 = (makeStruct2*)malloc(sizeof(makeStruct2) * num_threads);
-    // threads2 = (pthread_t*)malloc(sizeof(pthread_t) * num_threads);
-
-    // pthread_mutex_t* mtx;
-    // mtx = malloc(sizeof(pthread_mutex_t));
-    // pthread_mutex_init(mtx, NULL);
-
-    // for (int i = 0; i < num_threads; i++) {
-    //     arguments2[i].id = i;
-    //     arguments2[i].num_threads = num_threads;
-    //     arguments2[i].root = root;
-    //     arguments2[i].dim = d;
-    //     arguments2[i].distances = distances;
-    //     arguments2[i].data_parts_size_inner = data_parts_size_inner;
-    //     arguments2[i].data_parts_size_outer = data_parts_size_outer;
-    //     arguments2[i].mutex = mtx;
-    //     pthread_create(&threads2[i], NULL, inner_outer_threads, (void*)&arguments2[i]);
-    // }
-
-    // for (int i = 0; i < num_threads; i++) {
-    //     pthread_join(threads2[i], NULL);
-    // }
-    // pthread_mutex_destroy(mtx);
+    bool* flag = malloc(sizeof(bool));
+    *flag = 0;
 
     for (int i = 0; i < root->data_size; i++) {
-        if (distances[i] <= root->median_distance) {
+        if (distances[i] < root->median_distance) {
             *data_parts_size_inner = *data_parts_size_inner + 1;
+        } else if ((distances[i] == root->median_distance) && *flag == 0) {
+            *data_parts_size_inner = *data_parts_size_inner + 1;
+            *flag = 1;
+        } else if ((distances[i] == root->median_distance) && *flag == 1) {
+            *flag = 0;
         }
     }
 
@@ -145,6 +131,8 @@ void vp_tree_threads(struct node* root, struct node** nodes, int* node_counter, 
 
     *inner = 0;
     *outer = 0;
+
+    *flag = 0;
 
     makeStruct3* arguments3;
     pthread_t* threads3;
@@ -172,6 +160,7 @@ void vp_tree_threads(struct node* root, struct node** nodes, int* node_counter, 
         arguments3[i].data_outer = data_outer;
         arguments3[i].inner = inner;
         arguments3[i].outer = outer;
+        arguments3[i].flag = flag;
         arguments3[i].mtxin = mtxin;
         arguments3[i].mtxout = mtxout;
         pthread_create(&threads3[i], NULL, inner_outer_split, (void*)&arguments3[i]);

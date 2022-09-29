@@ -12,6 +12,7 @@ typedef struct Struct {
     struct node* root;
     int dim;
     double* distances;
+    double* distances_copy;
 } makeStruct;
 
 void* distances_threads(void* args)
@@ -25,6 +26,7 @@ void* distances_threads(void* args)
     }
     for (int i = start; i < end; i++) {
         arg->distances[i] = eucDist(arg->root->vp, arg->root->data[i], arg->dim);
+        arg->distances_copy[i] = eucDist(arg->root->vp, arg->root->data[i], arg->dim);
     }
     return NULL;
 }
