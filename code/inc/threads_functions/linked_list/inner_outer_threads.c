@@ -35,28 +35,8 @@ typedef struct Struct3 {
     pthread_mutex_t* mtxout;
 } makeStruct3;
 
-typedef struct Struct4 {
-    int id;
-    int num_threads;
-    int dim;
-    double** proc_data;
-    double* distances;
-    int data_size;
-    int median_dist;
-    int* data_parts_size_inner;
-    int* data_parts_size_outer;
-    double** data_inner;
-    double** data_outer;
-    int* inner;
-    int* outer;
-    bool* flag;
-    pthread_mutex_t* mtxin;
-    pthread_mutex_t* mtxout;
-} makeStruct4;
-
 void* inner_outer_threads(void* args)
 {
-
     makeStruct* arg = (makeStruct*)args;
     int range = arg->root->data_size / arg->num_threads;
     int start = arg->id * range;
@@ -64,9 +44,6 @@ void* inner_outer_threads(void* args)
     if (arg->id == arg->num_threads - 1) {
         end = arg->root->data_size;
     }
-    // calculate inner and outer sizes
-    // printf("idsssdadas\n");
-    // sleep(1);
     for (int i = start; i < end; i++) {
         if (arg->distances[i] <= arg->root->median_distance) {
             pthread_mutex_lock(arg->mutex);
@@ -149,58 +126,3 @@ void* inner_outer_split(void* args)
     }
     return NULL;
 }
-
-void* inner_outer_split_mpi(void* args)
-{
-    makeStruct4* arg = (makeStruct4*)args;
-    int range = arg->data_size / arg->num_threads;
-    int start = arg->id * range;
-    int end = start + range;
-    if (arg->id == arg->num_threads - 1) {
-        end = arg->data_size;
-    }
-
-    // printf("b:ok_ok_ok (%d) %d-%d -> %d\n", arg->id, start, end, arg->data_size);
-
-    // assign each proc_data point to inner or outer node
-    for (int i = start; i < end; i++) {
-        // printf("b:ok_ok_ok (%d) %d-%d -> %d [%d]\n", arg->id, start, end, arg->data_size, i);
-
-        if (arg->distances[i] < arg->median_dist) {
-            pthread_mutex_lock(arg->mtxin);
-            for (int j = 0; j < arg->dim; j++) {
-                arg->data_inner[*(arg->inner)][j] = arg->proc_data[i][j];
-            }
-            (*arg->inner) = (*arg->inner) + 1;
-            pthread_mutex_unlock(arg->mtxin);
-
-        } else if (arg->distances[i] > arg->median_dist) {
-            pthread_mutex_lock(arg->mtxout);
-            for (int j = 0; j < arg->dim; j++) {
-                arg->data_outer[*(arg->outer)][j] = arg->proc_data[i][j];
-            }
-            (*arg->outer) = (*arg->outer) + 1;
-            pthread_mutex_unlock(arg->mtxout);
-        } else if ((arg->distances[i] > arg->median_dist) && (*(arg->flag) == 0)) {
-            pthread_mutex_lock(arg->mtxin);
-            for (int j = 0; j < arg->dim; j++) {
-                arg->data_inner[*(arg->inner)][j] = arg->proc_data[i][j];
-            }
-            (*arg->inner) = (*arg->inner) + 1;
-            *arg->flag = 1;
-            pthread_mutex_unlock(arg->mtxin);
-        } else if ((arg->distances[i] > arg->median_dist) && (*(arg->flag) == 1)) {
-            pthread_mutex_lock(arg->mtxout);
-            for (int j = 0; j < arg->dim; j++) {
-                arg->data_outer[*(arg->outer)][j] = arg->proc_data[i][j];
-            }
-            (*arg->outer) = (*arg->outer) + 1;
-            *arg->flag = 0;
-            pthread_mutex_unlock(arg->mtxout);
-        }
-    }
-    // printf("a:ok_ok_ok (%d) %d-%d -> %d\n", arg->id, start, end, arg->data_size);
-
-    return NULL;
-}
-// TODO: REPAIR LINE 111 TILL HERE

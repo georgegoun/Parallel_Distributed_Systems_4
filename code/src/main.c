@@ -15,24 +15,29 @@
 // knn search
 #include "../inc/knn/knn_search.h"
 
-// mpi
-#include "../inc/mpi_threads_functions/distribution.h"
+// knn search mpi
+#include "../inc/knn/knn_search_mpi.h"
 #include <mpi.h>
 
 #include <stdio.h>
 #include <stdlib.h>
 #include <time.h>
 
-#define N 80
-#define d 2
+#define N 1000000
+#define d 3
 #define high 100.0
 #define low 0.0
-#define NUMOFTHREADS 100
-#define THRESHOLD 150000
-#define k 8
-#define method_code 4
+#define NUMOFTHREADS 4
+#define THRESHOLD 3 * N / 4
+#define k 4
+
+#define method_code 1
 #define knn_enabled 1
-#define MPI_NUMOFTHREADS 2
+
+// knn_enabled codes
+// 0 = no knn
+// 1 = knn
+// 2 = knn_mpi
 
 int main(int argc, char* argv[])
 {
@@ -42,10 +47,8 @@ int main(int argc, char* argv[])
     struct timespec start_seq = { 0 }, stop_seq = { 0 };
     struct timespec start_pthreads = { 0 }, stop_pthreads = { 0 };
     struct timespec start_threshold = { 0 }, stop_threshold = { 0 };
-
-    int ierr = 0;
-    int num_procs, my_id;
-    // int method_code = atoi(argv[1]);
+    struct timespec start_knn = { 0 }, stop_knn = { 0 };
+    struct timespec start_knn_mpi = { 0 }, stop_knn_mpi = { 0 };
 
     double** data = (double**)malloc(N * sizeof(double*));
 
@@ -105,18 +108,7 @@ int main(int argc, char* argv[])
         printf("\nThreshold %d elements in %d dimensions and %d nodes_created in %lf seconds\n", N, d, *node_count_ptr, timeDif(start_threshold, stop_threshold));
 
         break;
-        /*              MPI-Threads              */
-    case 4:
-        // MPI
-
-        ierr = MPI_Init(&argc, &argv);
-        ierr = MPI_Comm_rank(MPI_COMM_WORLD, &my_id);
-        ierr = MPI_Comm_size(MPI_COMM_WORLD, &num_procs);
-
-        distribution(0, data, MPI_COMM_WORLD, N, nodes, nodes[0], node_count_ptr, d, MPI_NUMOFTHREADS);
-        ierr = MPI_Finalize();
     }
-
     if (knn_enabled == 1) {
         double*** knn = (double***)malloc(N * sizeof(double**));
         for (int i = 0; i < N; i++) {
@@ -125,9 +117,12 @@ int main(int argc, char* argv[])
                 knn[i][j] = (double*)malloc(d * sizeof(double));
             }
         }
+        start_knn = timerStart(start_knn);
         for (int i = 0; i < N; i++) {
             knn_search(nodes, d, knn[i], k, i);
         }
+        stop_knn = timerStop(stop_knn);
+        printf("\nK(%d)NN %d elements in %d dimensions and %d nodes_created in %lf seconds\n", k, N, d, *node_count_ptr, timeDif(start_knn, stop_knn));
 
         printf("\nknn data search for: ");
         for (int i = 0; i < d; i++) {
@@ -140,6 +135,21 @@ int main(int argc, char* argv[])
             }
             printf("\n");
         }
+    }
+    if (knn_enabled == 2) {
+        // knn_mpi
+        MPI_Init(&argc, &argv);
+        int rank;
+        MPI_Comm_rank(MPI_COMM_WORLD, &rank);
+        if (rank == 0) {
+            start_knn_mpi = timerStart(start_knn_mpi);
+        }
+        knn_search_mpi(0, nodes, N, k, d);
+        if (rank == 0) {
+            stop_knn_mpi = timerStop(stop_knn_mpi);
+            printf("\nK(%d)NN_MPI %d elements in %d dimensions and %d nodes_created in %lf seconds\n", k, N, d, *node_count_ptr, timeDif(start_knn_mpi, stop_knn_mpi));
+        }
+        MPI_Finalize();
     }
 
     return 0;

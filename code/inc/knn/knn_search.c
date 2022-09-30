@@ -10,10 +10,7 @@
 void knn_search(struct node** nodes, int dim, double** knn, int k, int knn_pos)
 {
     struct node* current_node = nodes[0];
-    // double** knn = (double**)malloc(k * sizeof(double*));
-    // for (int i = 0; i < dim; i++) {
-    //     knn[i] = (double*)malloc(dim * sizeof(double));
-    // }
+
     double distance = 0;
 
     // find the leaf node
@@ -107,7 +104,6 @@ void knn_search(struct node** nodes, int dim, double** knn, int k, int knn_pos)
     }
     if (knn_pos == 7) {
         for (int i = 0; i < k; i++) {
-            /* code */
             if (temp_distances_arr[i] == 0) {
             }
             printf("%f\t", temp_distances_arr[i]);

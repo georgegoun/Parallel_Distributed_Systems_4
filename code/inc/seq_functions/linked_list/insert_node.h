@@ -4,8 +4,6 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-//#define N 20
-
 struct node {
     double* vp;
     int id;

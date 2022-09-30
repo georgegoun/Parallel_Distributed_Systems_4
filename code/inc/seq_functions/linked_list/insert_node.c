@@ -48,14 +48,10 @@ void vp_tree(struct node* root, struct node** nodes, int* node_counter, int d)
     for (int i = 0; i < root->data_size; i++) {
         distances[i] = eucDist(root->vp, root->data[i], d);
         distances_copy[i] = eucDist(root->vp, root->data[i], d);
-        // printf("distance %d =%f\n",i,distances[i]);
     }
 
     root->median_distance = median(distances_copy, root->data_size, (root->data_size / 2) + 1);
     free(distances_copy);
-    // for (int i = 0; i < root->data_size; i++) {
-    //  printf("after median distance %d =%f\n",i,distances[i]);}
-    //  calculate inner and outer sizes
 
     int data_parts_size_inner = 0;
 
@@ -94,7 +90,6 @@ void vp_tree(struct node* root, struct node** nodes, int* node_counter, int d)
 
     for (int i = 0; i < root->data_size; i++) {
         if (distances[i] < root->median_distance) {
-            // printf("%f <= %f is in inner\n", distances[i], root->median_distance);
             for (int j = 0; j < d; j++) {
                 data_inner[inner][j] = root->data[i][j];
             }
@@ -115,7 +110,6 @@ void vp_tree(struct node* root, struct node** nodes, int* node_counter, int d)
         }
 
         else if (distances[i] > root->median_distance) {
-            // printf("%f > %f is in outer\n", distances[i], root->median_distance);
             for (int j = 0; j < d; j++) {
                 data_outer[outer][j] = root->data[i][j];
             }
@@ -154,13 +148,9 @@ void print_info(struct node* node, int d)
     }
     if (node->inner != NULL) {
         printf("we got an inner child!\n");
-        // printf("inner node:\n");
-        // print_info(node->inner);
     }
     if (node->outer != NULL) {
         printf("we got an outer child!\n");
-        // printf("outer node:\n");
-        // print_info(node->outer);
     }
     printf("\n\n--------------------\n\n");
 }

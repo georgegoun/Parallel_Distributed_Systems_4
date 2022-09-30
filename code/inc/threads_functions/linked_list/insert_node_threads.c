@@ -13,16 +13,6 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-// struct node {
-//     double* vp;
-//     int id;
-//     double median_distance;
-//     double** data;
-//     int data_size;
-//     struct node* inner;
-//     struct node* outer;
-// };
-
 typedef struct Struct {
     int id;
     int num_threads;
