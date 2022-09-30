@@ -8,4 +8,6 @@ void* inner_outer_threads(void* args);
 
 void* inner_outer_split(void* args);
 
+void* inner_outer_split_mpi(void* args);
+
 #endif

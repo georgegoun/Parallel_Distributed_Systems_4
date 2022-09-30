@@ -8,6 +8,8 @@
         "eucdist.h": "c",
         "median.h": "c",
         "knn_search.h": "c",
-        "insert_node.h": "c"
-    }
+        "insert_node.h": "c",
+        "inner_outer_threads.h": "c"
+    },
+    "C_Cpp.errorSquiggles": "Disabled"
 }

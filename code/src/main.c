@@ -15,17 +15,24 @@
 // knn search
 #include "../inc/knn/knn_search.h"
 
+// mpi
+#include "../inc/mpi_threads_functions/distribution.h"
+#include <mpi.h>
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <time.h>
 
-#define N 4000000
-#define d 4
+#define N 80
+#define d 2
 #define high 100.0
 #define low 0.0
 #define NUMOFTHREADS 100
 #define THRESHOLD 150000
 #define k 8
+#define method_code 4
+#define knn_enabled 1
+#define MPI_NUMOFTHREADS 2
 
 int main(int argc, char* argv[])
 {
@@ -36,7 +43,9 @@ int main(int argc, char* argv[])
     struct timespec start_pthreads = { 0 }, stop_pthreads = { 0 };
     struct timespec start_threshold = { 0 }, stop_threshold = { 0 };
 
-    int method_code = atoi(argv[1]);
+    int ierr = 0;
+    int num_procs, my_id;
+    // int method_code = atoi(argv[1]);
 
     double** data = (double**)malloc(N * sizeof(double*));
 
@@ -96,8 +105,19 @@ int main(int argc, char* argv[])
         printf("\nThreshold %d elements in %d dimensions and %d nodes_created in %lf seconds\n", N, d, *node_count_ptr, timeDif(start_threshold, stop_threshold));
 
         break;
+        /*              MPI-Threads              */
+    case 4:
+        // MPI
+
+        ierr = MPI_Init(&argc, &argv);
+        ierr = MPI_Comm_rank(MPI_COMM_WORLD, &my_id);
+        ierr = MPI_Comm_size(MPI_COMM_WORLD, &num_procs);
+
+        distribution(0, data, MPI_COMM_WORLD, N, nodes, nodes[0], node_count_ptr, d, MPI_NUMOFTHREADS);
+        ierr = MPI_Finalize();
     }
-    if (atoi(argv[2]) == 1) {
+
+    if (knn_enabled == 1) {
         double*** knn = (double***)malloc(N * sizeof(double**));
         for (int i = 0; i < N; i++) {
             knn[i] = (double**)malloc(k * sizeof(double*));

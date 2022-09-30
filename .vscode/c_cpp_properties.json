@@ -3,7 +3,8 @@
         {
             "name": "Mac",
             "includePath": [
-                "${workspaceFolder}/**"
+                "${workspaceFolder}/**",
+                "/Users/goun/Downloads/dev/c_tools/openmpi-2.0.4/ompi/include"
             ],
             "defines": [],
             "macFrameworkPath": [
