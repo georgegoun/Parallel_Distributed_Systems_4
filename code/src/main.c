@@ -29,10 +29,15 @@
 #define low 0.0
 #define NUMOFTHREADS 4
 #define THRESHOLD 3 * N / 4
-#define k 4
+#define k 64
 
 #define method_code 1
-#define knn_enabled 1
+#define knn_enabled 2
+
+// method codes:
+// 1 = Sequential
+// 2 = Threads
+// 3 = Threshold Threads.
 
 // knn_enabled codes
 // 0 = no knn
@@ -124,17 +129,17 @@ int main(int argc, char* argv[])
         stop_knn = timerStop(stop_knn);
         printf("\nK(%d)NN %d elements in %d dimensions and %d nodes_created in %lf seconds\n", k, N, d, *node_count_ptr, timeDif(start_knn, stop_knn));
 
-        printf("\nknn data search for: ");
-        for (int i = 0; i < d; i++) {
-            printf("%lf ", data[7][i]);
-        }
-        printf("\n");
-        for (int i = 0; i < k; i++) {
-            for (int j = 0; j < d; j++) {
-                printf("%lf ", knn[7][i][j]);
-            }
-            printf("\n");
-        }
+        // printf("\nknn data search for: ");
+        // for (int i = 0; i < d; i++) {
+        //     printf("%lf ", data[7][i]);
+        // }
+        // printf("\n");
+        // for (int i = 0; i < k; i++) {
+        //     for (int j = 0; j < d; j++) {
+        //         printf("%lf ", knn[7][i][j]);
+        //     }
+        //     printf("\n");
+        // }
     }
     if (knn_enabled == 2) {
         // knn_mpi

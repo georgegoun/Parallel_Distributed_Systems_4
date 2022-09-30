@@ -102,13 +102,13 @@ void knn_search(struct node** nodes, int dim, double** knn, int k, int knn_pos)
             break;
         }
     }
-    if (knn_pos == 7) {
-        for (int i = 0; i < k; i++) {
-            if (temp_distances_arr[i] == 0) {
-            }
-            printf("%f\t", temp_distances_arr[i]);
-        }
-    }
+    // if (knn_pos == 7) {
+    //     for (int i = 0; i < k; i++) {
+    //         if (temp_distances_arr[i] == 0) {
+    //         }
+    //         printf("%f\t", temp_distances_arr[i]);
+    //     }
+    // }
 
     return;
 }
